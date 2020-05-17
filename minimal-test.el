@@ -1,22 +1,26 @@
 ;;; Usage: /path/to/emacs -nw -Q -l /path/to/minimal-test.el
+
 (toggle-debug-on-error)
 
 (setq package-user-dir (format "%s/elpa--test-lsp-docker/%s" user-emacs-directory emacs-version))
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")))
+
+(setq package-selected-packages
+      '(
+        use-package
+        python
+        lsp-mode
+        lsp-docker
+        ))
+
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
 
 (package-initialize)
 
-(defun require-packages (&rest packages)
-  (dolist (pkg packages)
-    (unless (package-installed-p pkg)
-      (package-refresh-contents)
-      (package-install pkg))
-    (require pkg)))
+(unless package-archive-contents
+  (package-refresh-contents))
 
-(require-packages
- 'use-package 'python 'lsp-mode 'lsp-docker)
+(package-install-selected-packages)
 
 (require 'package)
 (defun list-installed-package ()
